@@ -20,7 +20,7 @@ setup(
     author_email = u'duanhongyi@github.com',
     packages = ['dwebsocket'],
     classifiers = [
-        'Development Status :: 3 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
