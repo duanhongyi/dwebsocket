@@ -36,6 +36,8 @@ class WebSocketProtocol13(object):
         self.sock = sock
         self.headers = headers
         self.mask_outgoing = mask_outgoing
+        self.close_code = None
+        self.close_reason = None
         self.server_terminated = False
         self.client_terminated = False
 
@@ -92,7 +94,12 @@ class WebSocketProtocol13(object):
                 return (opcode, data)
             elif opcode == self.OPCODE_CLOSE:
                 self.client_terminated = True
-                self.close()
+                close_code, close_reason = None, None
+                if len(data) >= 2:
+                    close_code = struct.unpack('>H', data[:2])[0]
+                if len(data) > 2:
+                    close_reason = data[2:]
+                self.close(close_code, close_reason)
                 return (opcode, None)
             elif opcode == self.OPCODE_PING:
                 self.write_pong(data)
@@ -237,12 +244,20 @@ class WebSocketProtocol13(object):
         """
         self._write_frame(True, self.OPCODE_PONG, data)
 
-    def write_close(self, reason=b""):
+    def write_close(self, code=None, reason=None):
         """
         write close data to the server.
         reason: the reason to close. This must be string.
         """
-        self._write_frame(True, self.OPCODE_CLOSE, reason)
+        if code is None and reason is not None:
+            code = 1000  # "normal closure" status code
+        if code is None:
+            close_data = b''
+        else:
+            close_data = struct.pack('>H', code)
+        if reason is not None:
+            close_data += reason
+        self._write_frame(True, self.OPCODE_CLOSE, close_data)
 
     def _abort(self):
         """Instantly _aborts the WebSocket connection by closing the socket"""
@@ -250,14 +265,19 @@ class WebSocketProtocol13(object):
         self.client_terminated = True
         self.sock.close()  # forcibly tear down the connection
 
-    def close(self, reason=None):
+    def close(self, code=None, reason=None):
+        self.close_code = code
+        self.close_reason = reason
         if not self.server_terminated:
             if not reason:
                 reason = b''
-            self.write_close(reason)
+            if not code:
+                code = self.STATUS_NORMAL
+            self.write_close(code, reason)
             self.server_terminated = True
+            self._abort()
         if self.client_terminated:
-            self.sock.close()
+            self._abort()
 
 
 protocols = {

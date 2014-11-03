@@ -101,10 +101,10 @@ class WebSocket(object):
                 return
             yield message
 
-    def close(self, reason=b""):
+    def close(self, code=None, reason=None):
         '''
         Forcibly close the websocket.
         '''
         if not self.closed:
-            self.protocol.close(reason)
+            self.protocol.close(code, reason)
             self.closed = True
