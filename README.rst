@@ -2,9 +2,6 @@
 dwebsocket
 ================
 
-**IMPORTANT: Please read the disclaimer a few sections below before you start
-using dwebsocket.**
-
 The **dwebsocket** module provides an implementation of the WebSocket
 Protocol for django. 
 
@@ -13,10 +10,8 @@ defined in `RFC 6455 <http://tools.ietf.org/html/rfc6455>`_.  Certain
 browser versions (notably Safari 5.x) implemented an earlier draft of
 the protocol (known as "draft 76") and are not compatible with this module.
 
-The **dwebsocket** module based django-websocket development.
-
-**django-websocket** module in `https://github.com/gregmuellegger/django-websocket`.
-
+The **dwebsocket** module based django-websocket development, django-websocket
+module in `https://github.com/gregmuellegger/django-websocket`.
 Thank you Gregor Müllegger.
 
 Usage
