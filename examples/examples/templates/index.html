@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>django-websocket</title>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">//<![CDATA[
+    $(function () {
+        var s = new WebSocket('ws://127.0.0.1:8000/echo');
+        s.onopen = function () {
+            console.log('WebSocket open');
+        };
+        s.onmessage = function (e) {
+            console.log('message: ' + e.data);
+            $('#messagecontainer').append('<p>' + e.data + '</p>');
+        };
+        window.s = s;
+
+        $('#send_message').click(function () {
+            s.send($('#message').val());
+        });
+    });
+    //]]></script>
+</head>
+<body>
+<input type="text" id="message" value="Hello, World!" />
+<button type="button" id="send_message">Send message</button>
+<h1>Received Messages</h1>
+<div id="messagecontainer">
+
+</div>
+</body>
+</html>
