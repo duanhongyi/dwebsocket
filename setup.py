@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
+here = os.path.abspath(os.path.dirname(__file__))
+readme_file = os.path.join(here, 'README.rst')
+changes_file = os.path.join(here, 'CHANGES.rst')
 
 long_description = '\n\n'.join((
-    file('README.rst').read(),
-    file('CHANGES.rst').read(),
+    file(readme_file).read(),
+    file(changes_file).read(),
 ))
 
 
