@@ -15,7 +15,9 @@ def _setup_websocket(func):
     def new_func(request, *args, **kwargs):
         response = func(request, *args, **kwargs)
         if response is None and request.is_websocket():
-            return HttpResponse()
+            response =  HttpResponse()
+            response.__len__ = lambda : 0
+            return response
         return response
     if not WEBSOCKET_MIDDLEWARE_INSTALLED:
         decorator = decorator_from_middleware(WebSocketMiddleware)
