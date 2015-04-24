@@ -1,8 +1,9 @@
+from eventlet import wsgi, patcher
+patcher.monkey_patch()
+
 import sys
 import getopt
-from gevent import monkey
-monkey.patch_all()
-from gevent.pywsgi import WSGIServer
+import eventlet
 from examples.wsgi import application
 
 
@@ -11,5 +12,5 @@ opts, _ = getopt.getopt(sys.argv[1:], "b:")
 for opt, value in opts:
     if opt == '-b':
         addr, port = value.split(":")
-server = WSGIServer((addr, int(port)), application)
-server.serve_forever()
+
+wsgi.server(eventlet.listen((addr, int(port))), application)

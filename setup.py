@@ -8,8 +8,8 @@ readme_file = os.path.join(here, 'README.rst')
 changes_file = os.path.join(here, 'CHANGES.rst')
 
 long_description = '\n\n'.join((
-    file(readme_file).read(),
-    file(changes_file).read(),
+    open(readme_file).read(),
+    open(changes_file).read(),
 ))
 
 
@@ -35,5 +35,5 @@ setup(
         'Topic :: Utilities'
     ],
     zip_safe = True,
-    install_requires = ['setuptools'],
+    install_requires = ['setuptools', "six"],
 )

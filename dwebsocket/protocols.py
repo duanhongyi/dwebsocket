@@ -1,4 +1,4 @@
-#encoding:utf-8
+# encoding:utf-8
 import os
 import array
 import struct
@@ -6,6 +6,7 @@ import select
 import socket
 import hashlib
 import base64
+import six
 from errno import EINTR
 
 
@@ -64,7 +65,7 @@ class WebSocketProtocol13(object):
         """
         _m = array.array("B", mask_key)
         _d = array.array("B", data)
-        for i in xrange(len(_d)):
+        for i in range(len(_d)):
             _d[i] ^= _m[i % 4]
         return _d.tostring()
 
@@ -113,10 +114,10 @@ class WebSocketProtocol13(object):
         recieve data as frame from server.
         """
         header_bytes = self._read_strict(2)
-        b1 = ord(header_bytes[0])
+        b1 = header_bytes[0] if six.PY3 else ord(header_bytes[0])
         fin = b1 >> 7 & 1
         opcode = b1 & 0xf
-        b2 = ord(header_bytes[1])
+        b2 = header_bytes[1] if six.PY3 else ord(header_bytes[1])
         mask = b2 >> 7 & 1
         length = b2 & 0x7f
 
@@ -137,7 +138,7 @@ class WebSocketProtocol13(object):
 
     def _read_strict(self, bufsize):
         remaining = bufsize
-        _bytes = ""
+        _bytes = b""
         while remaining:
             _buffer = self.sock.recv(bufsize)
             if not _buffer:
@@ -170,13 +171,13 @@ class WebSocketProtocol13(object):
             "%s"
             "\r\n" % (
                 self.compute_accept_value(
-                    self.headers.get("HTTP_SEC_WEBSOCKET_KEY")
-                ),
+                    self.headers.get("HTTP_SEC_WEBSOCKET_KEY").encode("utf8")
+                ).decode("utf8"),
                 subprotocol_header
             )
         )
         try:
-            self.sock.send(accept_header)
+            self.sock.send(accept_header.encode("utf8"))
         except socket.error:
             self._abort()
 
@@ -225,7 +226,6 @@ class WebSocketProtocol13(object):
             opcode = 0x2
         else:
             opcode = 0x1
-        message = message.encode('utf8')
         self._write_frame(True, opcode, message)
 
     def write_ping(self, payload=""):
@@ -281,8 +281,7 @@ class WebSocketProtocol13(object):
 
 
 protocols = {
-    '13': WebSocketProtocol13        
+    '13': WebSocketProtocol13
 }
 
 get_websocket_protocol = protocols.get
-
