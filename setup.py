@@ -14,14 +14,14 @@ long_description = '\n\n'.join((
 
 
 setup(
-    name = u'dwebsocket',
-    version = u'0.2.4',
-    url = u'http://github.com/duanhongyi/dwebsocket',
-    license = u'BSD',
-    description = u'Websocket support for django.',
+    name = 'dwebsocket',
+    version = '0.2.4',
+    url = 'http://github.com/duanhongyi/dwebsocket',
+    license = 'BSD',
+    description = 'Websocket support for django.',
     long_description = long_description,
     author = "duanhongyi",
-    author_email = u'duanhongyi@github.com',
+    author_email = 'duanhongyi@github.com',
     packages = ['dwebsocket'],
     classifiers = [
         'Development Status :: 5 - Production/Stable',
