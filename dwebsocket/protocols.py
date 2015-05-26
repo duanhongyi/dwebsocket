@@ -55,7 +55,7 @@ class WebSocketProtocol13(object):
             self._abort()
 
     @classmethod
-    def mask_or_unmask(cls, mask_key, data):
+    def mask_or_unmask(cls, mask, data):
         """Websocket masking function.
         `mask` is a `bytes` object of length 4; `data` is a `bytes` object of any length.
         Returns a `bytes` object of the same length as `data` with the mask applied
