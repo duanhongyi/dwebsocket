@@ -64,7 +64,7 @@ class WebSocketProtocol13(object):
         """
         mask = array.array("B", mask)
         unmasked = array.array("B", data)
-        for i in xrange(len(data)):
+        for i in range(len(data)):
             unmasked[i] = unmasked[i] ^ mask[i % 4]
         if hasattr(unmasked, 'tobytes'):
             # tostring was deprecated in py32.  It hasn't been removed,
