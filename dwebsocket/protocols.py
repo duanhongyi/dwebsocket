@@ -108,6 +108,8 @@ class WebSocketProtocol13(object):
                 raise ValueError(
                     "Unknown opcode %s(fin:%s, data:%s)" % (opcode, fin, data)
                 )
+        raise EOFError("EOF when reading a line, websocket has been closed")
+
 
     def read_frame(self):
         """
@@ -142,7 +144,7 @@ class WebSocketProtocol13(object):
         while remaining:
             _buffer = self.sock.recv(bufsize)
             if not _buffer:
-                raise socket.error('socket closed')
+                raise socket.error(socket.EBADF, 'Bad file descriptor')
             _bytes += _buffer
             remaining = bufsize - len(_bytes)
         return _bytes
