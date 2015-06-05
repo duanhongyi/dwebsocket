@@ -55,19 +55,24 @@ class WebSocketProtocol13(object):
             self._abort()
 
     @classmethod
-    def mask_or_unmask(cls, mask_key, data):
+    def mask_or_unmask(cls, mask, data):
+        """Websocket masking function.
+        `mask` is a `bytes` object of length 4; `data` is a `bytes` object of any length.
+        Returns a `bytes` object of the same length as `data` with the mask applied
+        as specified in section 5.3 of RFC 6455.
+        This pure-python implementation may be replaced by an optimized version when available.
         """
-        mask or unmask data. Just do xor for each byte
-
-        mask_key: 4 byte string(byte).
-
-        data: data to mask/unmask.
-        """
-        _m = array.array("B", mask_key)
-        _d = array.array("B", data)
-        for i in range(len(_d)):
-            _d[i] ^= _m[i % 4]
-        return _d.tostring()
+        mask = array.array("B", mask)
+        unmasked = array.array("B", data)
+        for i in range(len(data)):
+            unmasked[i] = unmasked[i] ^ mask[i % 4]
+        if hasattr(unmasked, 'tobytes'):
+            # tostring was deprecated in py32.  It hasn't been removed,
+            # but since we turn on deprecation warnings in our tests
+            # we need to use the right one.
+            return unmasked.tobytes()
+        else:
+            return unmasked.tostring()
 
     @classmethod
     def select_subprotocol(cls, subprotocols):
@@ -215,7 +220,7 @@ class WebSocketProtocol13(object):
             frame += struct.pack("!BQ", 127 | mask_bit, l)
         if self.mask_outgoing:
             mask = os.urandom(4)
-            data = mask + self._apply_mask(mask, data)
+            data = mask + self.mask_or_unmask(mask, data)
         frame += data
         try:
             self.sock.send(frame)

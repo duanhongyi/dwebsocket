@@ -97,9 +97,9 @@ class WebSocket(object):
         '''
         while True:
             message = self.wait()
-            if message is None:
-                return
             yield message
+            if message is None:
+                break
 
     def close(self, code=None, reason=None):
         '''
