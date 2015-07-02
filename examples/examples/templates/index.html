@@ -5,29 +5,42 @@
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script type="text/javascript">//<![CDATA[
     $(function () {
-        var s = new WebSocket("ws://" + window.location.host + "/echo");
-        s.onopen = function () {
-            console.log('WebSocket open');
-        };
-        s.onmessage = function (e) {
-            console.log('message: ' + e.data);
-            $('#messagecontainer').append('<p>' + e.data + '</p>');
-        };
-        window.s = s;
+        $('#connect_websocket').click(function () {
+            var s = new WebSocket("ws://" + window.location.host + "/echo");
+            s.onopen = function () {
+                console.log('WebSocket open');
+            };
+            s.onmessage = function (e) {
+                console.log('message: ' + e.data);
+                $('#messagecontainer').append('<p>' + e.data + '</p>');
+            };
+            if(window.s){
+                window.s.close()
+            }
+            window.s = s;
+        });
         $('#send_message').click(function () {
             if(!window.s){
                 alert("Please connect server.");
             }else{
-                s.send($('#message').val());
+                window.s.send($('#message').val());
             }
         });
+        $('#close_websocket').click(function () {
+            if(window.s){
+                window.s.close();
+            }
+        });
+
     });
     //]]></script>
 </head>
 <body>
 <br>
 <input type="text" id="message" value="Hello, World!" />
+<button type="button" id="connect_websocket">Connect websocket</button>
 <button type="button" id="send_message">Send message</button>
+<button type="button" id="close_websocket">Close websocket</button>
 <h1>Received Messages</h1>
 <div id="messagecontainer">
 

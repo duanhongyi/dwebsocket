@@ -21,6 +21,8 @@ def echo(request):
         try:
             clients.append(request.websocket)
             for message in request.websocket:
+                if not message:
+                    break
                 for client in clients:
                     client.send(message)
         finally:
