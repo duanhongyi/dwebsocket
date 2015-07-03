@@ -1,10 +1,18 @@
 import logging
+import importlib
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from .factory import WebSocketFactory
 
 
 WEBSOCKET_ACCEPT_ALL = getattr(settings, 'WEBSOCKET_ACCEPT_ALL', False)
+WEBSOCKET_FACTORY_CLASS = getattr(
+    settings,
+    'WEBSOCKET_FACTORY_CLASS',
+    #'dwebsocket.backends.default.factory.WebSocketFactory',
+    'dwebsocket.backends.uwsgi.factory.uWsgiWebSocketFactory'
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -12,8 +20,13 @@ class WebSocketMiddleware(object):
     @classmethod
     def process_request(cls, request):
         try:
-            factory = WebSocketFactory(request)
-            request.websocket = factory.create_websocket()
+            offset = WEBSOCKET_FACTORY_CLASS.rindex(".")
+            
+            factory_cls = getattr(
+                importlib.import_module(WEBSOCKET_FACTORY_CLASS[:offset]),
+                WEBSOCKET_FACTORY_CLASS[offset+1:]
+            )
+            request.websocket = factory_cls(request).create_websocket()
         except ValueError as e:
             logger.debug(e)
             request.websocket = None
