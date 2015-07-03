@@ -9,8 +9,7 @@ WEBSOCKET_ACCEPT_ALL = getattr(settings, 'WEBSOCKET_ACCEPT_ALL', False)
 WEBSOCKET_FACTORY_CLASS = getattr(
     settings,
     'WEBSOCKET_FACTORY_CLASS',
-    #'dwebsocket.backends.default.factory.WebSocketFactory',
-    'dwebsocket.backends.uwsgi.factory.uWsgiWebSocketFactory'
+    'dwebsocket.backends.default.factory.WebSocketFactory',
 )
 
 logger = logging.getLogger(__name__)

@@ -28,17 +28,6 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
 
-# def application(environ, start_response):
-   
-#     if 'HTTP_SEC_WEBSOCKET_KEY' in environ:
-#         print("------------------------")
-#         # start_response = lambda x, y: None
-        
-#         import uwsgi
-#         uwsgi.websocket_handshake(environ['HTTP_SEC_WEBSOCKET_KEY'], environ.get('HTTP_ORIGIN', ''))
-#         return _application(environ, start_response)
-#     else:
-#         return _application(environ, start_response)
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
