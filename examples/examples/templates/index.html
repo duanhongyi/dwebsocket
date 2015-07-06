@@ -15,7 +15,7 @@
             };
             s.onmessage = function (e) {
                 console.log('message: ' + e.data);
-                $('#messagecontainer').append('<p>' + e.data + '</p>');
+                $('#messagecontainer').prepend('<p>' + e.data + '</p>');
             };
             window.s = s;
         });
