@@ -127,6 +127,19 @@ functionallity for normal GET requests::
                 message = modify_message(message)
                 request.websocket.send(message)
 
+
+Change websocket backends
+-------------------
+
+Currently supports two kinds of backends, they are default and uwsgi.
+
+Django develop server, eventlent, gevent, gunicore are supported by default.
+
+If you want to use the uwsgi backend, add `WEBSOCKET_FACTORY_CLASS` in the settings.py file::
+
+    WEBSOCKET_FACTORY_CLASS = 'dwebsocket.backends.uwsgi.factory.uWsgiWebSocketFactory'
+
+
 Using in production
 -------------------
 
