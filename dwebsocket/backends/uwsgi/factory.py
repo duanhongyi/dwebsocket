@@ -15,7 +15,7 @@ class SocketWarp(object):
 
     def recv(self, bufsize):
         if not self.closed:
-            uwsgi.wait_fd_read(self.fileno(), 300)
+            uwsgi.wait_fd_read(self.fileno(), -1)
             uwsgi.suspend()
         if not self.closed:
             return uwsgi.recv(self.fileno(), bufsize)
