@@ -138,6 +138,7 @@ Django develop server, eventlent, gevent, gunicore are supported by default.
 If you want to use the uwsgi backend, add `WEBSOCKET_FACTORY_CLASS` in the settings.py file::
 
     WEBSOCKET_FACTORY_CLASS = 'dwebsocket.backends.uwsgi.factory.uWsgiWebSocketFactory'
+    uwsgi --http :8080 --http-websockets --processes 1 --wsgi-file wsgi.py --async 30 --ugreen
 
 
 Using in production
