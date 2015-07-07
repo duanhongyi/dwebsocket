@@ -142,7 +142,7 @@ If you want to use the uwsgi backend, add `WEBSOCKET_FACTORY_CLASS` in the setti
 Run uwsgi::
 
     uwsgi --http :8080 --http-websockets --processes 1 \
-    --wsgi-file wsgi.py--async 30 --ugreen --socket-timeout 60
+    --wsgi-file wsgi.py--async 30 --ugreen --http-timeout 300
 
 
 Using in production
