@@ -19,6 +19,8 @@ class WebSocketFactory(factory.WebSocketFactory):
                 sock = wsgi_input._sock
             elif hasattr(wsgi_input, 'rfile'):  # gevent
                 sock = wsgi_input.rfile._sock
+            elif hasattr(wsgi_input, 'raw'):
+                sock = wsgi_input.raw._sock
             else:
                 raise ValueError('Socket not found in wsgi.input')
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
