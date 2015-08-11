@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 readme_file = os.path.join(here, 'README.rst')
@@ -15,14 +15,14 @@ long_description = '\n\n'.join((
 
 setup(
     name = 'dwebsocket',
-    version = '0.4.1',
+    version = '0.4.2',
     url = 'http://github.com/duanhongyi/dwebsocket',
     license = 'BSD',
     description = 'Websocket support for django.',
     long_description = long_description,
     author = "duanhongyi",
     author_email = 'duanhongyi@github.com',
-    packages = ['dwebsocket'],
+    packages = find_packages(),
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
