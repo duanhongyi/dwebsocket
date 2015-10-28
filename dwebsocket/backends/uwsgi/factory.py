@@ -24,6 +24,11 @@ class SocketWarp(object):
         if not self.closed:
             return uwsgi.send(self.fileno(), body)
 
+    def sendall(self, body):
+        while body:
+            l = self.send(body)
+            body = body[l:]
+
     def close(self):
         self.closed = True
         uwsgi.close(self.fileno())

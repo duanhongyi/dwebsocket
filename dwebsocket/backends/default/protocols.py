@@ -184,7 +184,7 @@ class WebSocketProtocol13(object):
             )
         )
         try:
-            self.sock.send(accept_header.encode("utf8"))
+            self.sock.sendall(accept_header.encode("utf8"))
         except socket.error:
             self._abort()
 
@@ -223,7 +223,7 @@ class WebSocketProtocol13(object):
             data = mask + self.mask_or_unmask(mask, data)
         frame += data
         try:
-            self.sock.send(frame)
+            self.sock.sendall(frame)
         except socket.error:
             self._abort()
 
