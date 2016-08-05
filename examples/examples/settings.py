@@ -157,3 +157,4 @@ LOGGING = {
         },
     }
 }
+# WEBSOCKET_FACTORY_CLASS = 'dwebsocket.backends.uwsgi.factory.uWsgiWebSocketFactory'
