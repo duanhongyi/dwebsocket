@@ -221,6 +221,8 @@ class WebSocketProtocol13(object):
         if self.mask_outgoing:
             mask = os.urandom(4)
             data = mask + self.mask_or_unmask(mask, data)
+        if isinstance(data, str):
+            data = bytes(data, 'utf-8')
         frame += data
         try:
             self.sock.sendall(frame)
