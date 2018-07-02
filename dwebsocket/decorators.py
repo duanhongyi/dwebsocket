@@ -6,7 +6,7 @@ from .middleware import WebSocketMiddleware
 __all__ = ('accept_websocket', 'require_websocket')
 
 
-WEBSOCKET_MIDDLEWARE_INSTALLED = 'django_websocket.middleware.WebSocketMiddleware' in settings.MIDDLEWARE_CLASSES
+WEBSOCKET_MIDDLEWARE_INSTALLED = 'dwebsocket.middleware.WebSocketMiddleware' in getattr(settings,'MIDDLEWARE_CLASSES', [])
 
 
 def _setup_websocket(func):
