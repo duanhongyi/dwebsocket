@@ -52,7 +52,7 @@ attribute will be ``None`` if ``request.is_websocket()`` returns ``False``.
 
 It has the following public methods:
 
-``WebSocket.wait()``
+``WebSocket.wait(timeout=-1)``
 ~~~~~~~~~~~~~~~~~~~~
 
 This will return exactly one message sent by the client. It will not return
@@ -86,6 +86,10 @@ This will send a single message to the client.
 
 You can use the websocket as iterator. It will yield every new message sent by
 the client and stop iteration after the client has closed the connection.
+
+``WebSocket.is_closed()``
+~~~~~~~~~~~~~~~~~~~~~~~~
+Return to ``True`` if websocket is closed, else ``False``.
 
 Error handling
 --------------

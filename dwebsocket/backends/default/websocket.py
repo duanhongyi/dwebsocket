@@ -74,7 +74,7 @@ class DefaultWebSocket(WebSocket):
             return self._message_queue.popleft()
         return fallback
 
-    def wait(self):
+    def wait(self, timeout=-1):
         '''
         Waits for and deserializes messages. Returns a single message; the
         oldest not yet processed.
@@ -84,10 +84,10 @@ class DefaultWebSocket(WebSocket):
             if self.closed:
                 return None
             # no parsed messages, must mean buf needs more data
-            new_data = self.protocol.read()
-            if not new_data:
+            if self.protocol.can_read(timeout=timeout):
+                self._message_queue.append(self.protocol.read())
+            else:
                 return None
-            self._message_queue.append(new_data)
         return self._message_queue.popleft()
 
     def close(self, code=None, reason=None):
@@ -97,3 +97,6 @@ class DefaultWebSocket(WebSocket):
         if not self.closed:
             self.protocol.close(code, reason)
             self.closed = True
+
+    def is_closed(self):
+        return self.closed or self.protocol.is_closed()

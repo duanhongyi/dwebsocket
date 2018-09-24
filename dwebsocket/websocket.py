@@ -39,7 +39,7 @@ class WebSocket(object):
         '''
         raise NotImplementedError
 
-    def wait(self):
+    def wait(self, timeout=-1):
         '''
         Waits for and deserializes messages. Returns a single message; the
         oldest not yet processed.
@@ -61,4 +61,7 @@ class WebSocket(object):
         '''
         Forcibly close the websocket.
         '''
+        raise NotImplementedError
+
+    def is_close(self):
         raise NotImplementedError

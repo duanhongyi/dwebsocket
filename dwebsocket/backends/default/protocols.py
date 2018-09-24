@@ -287,6 +287,9 @@ class WebSocketProtocol13(object):
             self._abort()
         if self.client_terminated:
             self._abort()
+    
+    def is_closed(self):
+        return self.server_terminated or self.client_terminated
 
 
 protocols = {
