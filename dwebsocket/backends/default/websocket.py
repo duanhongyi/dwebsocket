@@ -43,7 +43,9 @@ class DefaultWebSocket(WebSocket):
     def _get_new_messages(self):
         # read as long from socket as we need to get a new message.
         while self.protocol.can_read():
-            self._message_queue.append(self.protocol.read())
+            opcode, data = self.protocol.read()
+            if opcode != self.protocol.OPCODE_PING:
+                self._message_queue.append(data)
             if self._message_queue:
                 return
 
@@ -85,7 +87,9 @@ class DefaultWebSocket(WebSocket):
                 return None
             # no parsed messages, must mean buf needs more data
             if self.protocol.can_read(timeout=timeout):
-                self._message_queue.append(self.protocol.read())
+                opcode, data = self.protocol.read()
+                if opcode != self.protocol.OPCODE_PING:
+                    self._message_queue.append(data)
             else:
                 return None
         return self._message_queue.popleft()

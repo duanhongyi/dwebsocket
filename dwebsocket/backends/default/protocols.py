@@ -49,8 +49,7 @@ class WebSocketProtocol13(object):
         return value: string(byte array) value.
         """
         try:
-            _, data = self.read_data()
-            return data
+            return self.read_data()
         except socket.error:
             self._abort()
 
@@ -109,6 +108,7 @@ class WebSocketProtocol13(object):
                 return (opcode, None)
             elif opcode == self.OPCODE_PING:
                 self.write_pong(data)
+                return (opcode, data)
             else:
                 raise ValueError(
                     "Unknown opcode %s(fin:%s, data:%s)" % (opcode, fin, data)
