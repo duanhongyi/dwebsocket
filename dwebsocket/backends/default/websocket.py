@@ -76,7 +76,7 @@ class DefaultWebSocket(WebSocket):
             return self._message_queue.popleft()
         return fallback
 
-    def wait(self, timeout=-1):
+    def wait(self, timeout=None):
         '''
         Waits for and deserializes messages. Returns a single message; the
         oldest not yet processed.
