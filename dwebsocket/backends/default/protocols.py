@@ -52,6 +52,7 @@ class WebSocketProtocol13(object):
             return self.read_data()
         except socket.error:
             self._abort()
+        return self.OPCODE_CLOSE, None
 
     @classmethod
     def mask_or_unmask(cls, mask, data):
