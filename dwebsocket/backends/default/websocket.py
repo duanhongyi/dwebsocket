@@ -1,5 +1,5 @@
 #encoding:utf-8
-import collections
+import queue
 from dwebsocket.websocket import WebSocket
 
 class DefaultWebSocket(WebSocket):
@@ -28,7 +28,7 @@ class DefaultWebSocket(WebSocket):
         self.protocol = protocol
         self.closed = False
         self.handle = None
-        self._message_queue = collections.deque()
+        self._message_queue = queue.Queue()
 
     def accept_connection(self):
         self.protocol.accept_connection()
@@ -47,8 +47,8 @@ class DefaultWebSocket(WebSocket):
             opcode, data = self.protocol.read()
             if self.handle: self.handle(opcode, data)
             if opcode != self.protocol.OPCODE_PING:
-                self._message_queue.append(data)
-            if self._message_queue:
+                self._message_queue.put(data)
+            if self._message_queue.qsize() > 0:
                 return
 
     def count_messages(self):
@@ -56,17 +56,17 @@ class DefaultWebSocket(WebSocket):
         Returns the number of queued messages.
         '''
         self._get_new_messages()
-        return len(self._message_queue)
+        return self._message_queue.qsize()
 
     def has_messages(self):
         '''
         Returns ``True`` if new messages from the socket are available, else
         ``False``.
         '''
-        if self._message_queue:
+        if self._message_queue.qsize() > 0:
             return True
         self._get_new_messages()
-        if self._message_queue:
+        if self._message_queue.qsize() > 0:
             return True
         return False
 
@@ -75,7 +75,7 @@ class DefaultWebSocket(WebSocket):
         Return new message or ``fallback`` if no message is available.
         '''
         if self.has_messages():
-            return self._message_queue.popleft()
+            return self._message_queue.get()
         return fallback
 
     def wait(self, timeout=None):
@@ -83,7 +83,7 @@ class DefaultWebSocket(WebSocket):
         Waits for and deserializes messages. Returns a single message; the
         oldest not yet processed.
         '''
-        while not self._message_queue:
+        while self._message_queue.qsize() == 0:
             # Websocket might be closed already.
             if self.closed:
                 return None
@@ -92,10 +92,10 @@ class DefaultWebSocket(WebSocket):
                 opcode, data = self.protocol.read()
                 if self.handle: self.handle(opcode, data)
                 if opcode != self.protocol.OPCODE_PING:
-                    self._message_queue.append(data)
+                    self._message_queue.put(data)
             else:
                 return None
-        return self._message_queue.popleft()
+        return self._message_queue.get(timeout=timeout)
 
     def close(self, code=None, reason=None):
         '''
