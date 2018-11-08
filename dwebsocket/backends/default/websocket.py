@@ -27,6 +27,7 @@ class DefaultWebSocket(WebSocket):
         '''
         self.protocol = protocol
         self.closed = False
+        self.handle = None
         self._message_queue = collections.deque()
 
     def accept_connection(self):
@@ -44,6 +45,7 @@ class DefaultWebSocket(WebSocket):
         # read as long from socket as we need to get a new message.
         while self.protocol.can_read():
             opcode, data = self.protocol.read()
+            if self.handle: self.handle(opcode, data)
             if opcode != self.protocol.OPCODE_PING:
                 self._message_queue.append(data)
             if self._message_queue:
@@ -88,6 +90,7 @@ class DefaultWebSocket(WebSocket):
             # no parsed messages, must mean buf needs more data
             if self.protocol.can_read(timeout=timeout):
                 opcode, data = self.protocol.read()
+                if self.handle: self.handle(opcode, data)
                 if opcode != self.protocol.OPCODE_PING:
                     self._message_queue.append(data)
             else:
