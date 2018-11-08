@@ -15,7 +15,7 @@ long_description = '\n\n'.join((
 
 setup(
     name = 'dwebsocket',
-    version = '0.5.7',
+    version = '0.5.8',
     url = 'http://github.com/duanhongyi/dwebsocket',
     license = 'BSD',
     description = 'Websocket support for django.',
