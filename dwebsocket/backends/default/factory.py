@@ -18,7 +18,10 @@ class WebSocketFactory(factory.WebSocketFactory):
             if hasattr(wsgi_input, '_sock'):
                 sock = wsgi_input._sock
             elif hasattr(wsgi_input, 'rfile'):  # gevent
-                sock = wsgi_input.rfile._sock
+                if hasattr(wsgi_input.rfile, '_sock'):
+                    sock = wsgi_input.rfile._sock
+                else:
+                    sock = wsgi_input.rfile.raw._sock  
             elif hasattr(wsgi_input, 'raw'):
                 sock = wsgi_input.raw._sock
             else:
