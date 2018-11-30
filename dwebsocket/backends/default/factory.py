@@ -12,7 +12,7 @@ class WebSocketFactory(factory.WebSocketFactory):
 
     def get_wsgi_sock(self):
         if 'gunicorn.socket' in self.request.META:
-            sock = self.request.META['gunicorn.socket'].dup()
+            sock = self.request.META['gunicorn.socket']
         else:
             wsgi_input = self.request.META['wsgi.input']
             if hasattr(wsgi_input, '_sock'):
