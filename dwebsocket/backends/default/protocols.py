@@ -148,7 +148,7 @@ class WebSocketProtocol13(object):
         remaining = bufsize
         _bytes = b""
         while remaining:
-            _buffer = self.sock.recv(bufsize)
+            _buffer = self.sock.recv(remaining)
             if not _buffer:
                 raise socket.error(socket.EBADF, 'Bad file descriptor')
             _bytes += _buffer
