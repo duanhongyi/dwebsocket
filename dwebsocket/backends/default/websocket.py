@@ -1,5 +1,5 @@
 #encoding:utf-8
-import queue
+from six.moves import queue
 from dwebsocket.websocket import WebSocket
 
 class DefaultWebSocket(WebSocket):
