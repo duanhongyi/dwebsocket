@@ -8,7 +8,7 @@ from .protocols import get_websocket_protocol
 logger = logging.getLogger(__name__)
 
 
-class WebSocketFactory(factory.WebSocketFactory): 
+class WebSocketFactory(factory.WebSocketFactory):
 
     def get_wsgi_sock(self):
         if 'gunicorn.socket' in self.request.META:
@@ -24,9 +24,13 @@ class WebSocketFactory(factory.WebSocketFactory):
                     sock = wsgi_input.rfile.raw._sock  
             elif hasattr(wsgi_input, 'raw'):
                 sock = wsgi_input.raw._sock
+            elif hasattr(wsgi_input, 'stream') and hasattr(wsgi_input.stream, 'raw'):
+                # the type of wagi_input changed in django 2.1.5 from _io.BufferedReader to django.core.handlers.wsgi.LimitedStream
+                # see https://github.com/django/django/blob/b514dc14f4e1c364341f5931b354e83ef15ee12d/django/core/servers/basehttp.py#L96
+                sock = wsgi_input.stream.raw._sock
             else:
                 raise ValueError('Socket not found in wsgi.input')
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock
 
     def create_websocket(self):
