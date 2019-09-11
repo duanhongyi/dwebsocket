@@ -20,6 +20,7 @@ setup(
     license = 'BSD',
     description = 'Websocket support for django.',
     long_description = long_description,
+    long_description_content_type='text/markdown',
     author = "duanhongyi",
     author_email = 'duanhongyi@github.com',
     packages = find_packages(),
