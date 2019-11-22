@@ -1,6 +1,6 @@
 import threading
 from django.conf.urls import *
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from dwebsocket.decorators import accept_websocket
 
@@ -9,9 +9,7 @@ from dwebsocket.decorators import accept_websocket
 # admin.autodiscover()
 
 def base_view(request):
-    return render_to_response('index.html', {
-
-    }, context_instance=RequestContext(request))
+    return render(request, 'index.html')
 
 
 clients = []
@@ -33,7 +31,7 @@ def echo(request):
             lock.release()
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Example:
     url(r'^$', base_view),
     url(r'^echo$', echo),
@@ -44,4 +42,4 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
-)
+]
