@@ -7,11 +7,12 @@ import socket
 import hashlib
 import base64
 import six
-from errno import EINTR
+
+READ_MASK = select.POLLIN | select.POLLPRI
+ERROR_MASK = select.POLLERR | select.POLLHUP
 
 
 class WebSocketProtocol13(object):
-
     LENGTH_7 = 0x7d
     LENGTH_16 = 1 << 16
     LENGTH_63 = 1 << 63
@@ -35,6 +36,8 @@ class WebSocketProtocol13(object):
 
     def __init__(self, sock, headers, mask_outgoing=False):
         self.sock = sock
+        self.poller = select.poll()
+        self.poller.register(self.sock, READ_MASK | ERROR_MASK)
         self.headers = headers
         self.mask_outgoing = mask_outgoing
         self.close_code = None
@@ -193,14 +196,9 @@ class WebSocketProtocol13(object):
         '''
         Return ``True`` if new data can be read from the socket.
         '''
-        r, w, e = [self.sock], [], []
-        try:
-            r, w, e = select.select(r, w, e, timeout)
-        except select.error as err:
-            if err.args[0] == EINTR:
-                return False
-            self._abort()
-        return self.sock in r
+        timeout = int(timeout * 1000)
+        events = self.poller.poll(timeout)
+        return bool(events and events[0][1] & READ_MASK)
 
     def _write_frame(self, fin, opcode, data):
         if fin:
@@ -288,7 +286,18 @@ class WebSocketProtocol13(object):
             self._abort()
         if self.client_terminated:
             self._abort()
-    
+        try:
+            self.poller.unregister(self.sock)
+        except (KeyError, ValueError):
+            # KeyError is raised if somehow the socket was not
+            #   registered
+            # ValueError is raised if the socket's file descriptor is
+            #   negative.
+            # In either case, we can't do anything better than to
+            # remove the reference to the poller.
+            pass
+        self.poller = None
+
     def is_closed(self):
         return self.server_terminated or self.client_terminated
 
