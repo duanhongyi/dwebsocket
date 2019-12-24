@@ -276,6 +276,18 @@ class WebSocketProtocol13(object):
     def close(self, code=None, reason=None):
         self.close_code = code
         self.close_reason = reason
+        try:
+            if self.poller:
+                self.poller.unregister(self.sock)
+        except (KeyError, ValueError):
+            # KeyError is raised if somehow the socket was not
+            #   registered
+            # ValueError is raised if the socket's file descriptor is
+            #   negative.
+            # In either case, we can't do anything better than to
+            # remove the reference to the poller.
+            pass
+        self.poller = None
         if not self.server_terminated:
             if not reason:
                 reason = b''
@@ -286,17 +298,6 @@ class WebSocketProtocol13(object):
             self._abort()
         if self.client_terminated:
             self._abort()
-        try:
-            self.poller.unregister(self.sock)
-        except (KeyError, ValueError):
-            # KeyError is raised if somehow the socket was not
-            #   registered
-            # ValueError is raised if the socket's file descriptor is
-            #   negative.
-            # In either case, we can't do anything better than to
-            # remove the reference to the poller.
-            pass
-        self.poller = None
 
     def is_closed(self):
         return self.server_terminated or self.client_terminated
