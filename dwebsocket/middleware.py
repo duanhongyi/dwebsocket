@@ -2,6 +2,7 @@ import logging
 import importlib
 from django.conf import settings
 from django.http import HttpResponseBadRequest
+from django.middleware.common import CommonMiddleware
 from .factory import WebSocketFactory
 
 
@@ -15,7 +16,7 @@ WEBSOCKET_FACTORY_CLASS = getattr(
 logger = logging.getLogger(__name__)
 
 
-class WebSocketMiddleware(object):
+class WebSocketMiddleware(CommonMiddleware):
     @classmethod
     def process_request(cls, request):
         try:

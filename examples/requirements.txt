@@ -1,3 +1,2 @@
 django
 eventlet
--e git+https://github.com/duanhongyi/dwebsocket#egg=dwebsocket-master
