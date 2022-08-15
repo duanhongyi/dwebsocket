@@ -17,12 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 class WebSocketMiddleware(CommonMiddleware):
-    # https://blog.csdn.net/u012561176/article/details/84869330
-    # solving issue of WebSocketMiddleware() takes no arguments in Django 4.0
-    def __init__(self,get_response=None) -> None:
-        self.get_response=get_response
-        super().__init__()
-        pass
+
+    def __init__(self, get_response=None) -> None:
+        super().__init__(get_response)
 
     @classmethod
     def process_request(cls, request):
